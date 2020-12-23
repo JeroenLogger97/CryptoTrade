@@ -11,14 +11,22 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.FragmentMarketBinding
+import com.example.cryptotrade.model.TickerResponse
 import com.example.cryptotrade.repository.BitfinexRepository
 import com.example.cryptotrade.vm.TickerViewModel
 import kotlinx.coroutines.*
+import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class MarketFragment : Fragment() {
+
+    // todo: set refresh time to something accepted, like 10_000
+    // the time in ms the app should wait before sending a new API request to update the UI
+    private val refreshTimeInMillis: Long = 10_000
+    private val initialDelayInMillis: Long = 5_000
 
     private val viewModel: TickerViewModel by activityViewModels()
     private var _binding: FragmentMarketBinding? = null
@@ -31,7 +39,6 @@ class MarketFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentMarketBinding.inflate(inflater, container, false)
         return binding.root
-//        return inflater.inflate(R.layout.fragment_market, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,9 +46,18 @@ class MarketFragment : Fragment() {
 
         observeTicker()
 
+        // call first time manually to ensure initial data is present
+        viewModel.getTicker("BTCEUR")
+
         _binding?.btnRefresh?.setOnClickListener {
-            Log.d("TAG", "clicked refresh! refreshing....")
-            viewModel.getTicker("tBTCEUR")
+//            refreshData()
+//
+//            val tickerResponse = TickerResponse.createFromResponse(viewModel.ticker.value.toString())
+//            Log.d("TAG", "$tickerResponse")
+        }
+
+        fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
+            refreshData()
         }
     }
 
@@ -54,5 +70,12 @@ class MarketFragment : Fragment() {
         viewModel.errorText.observe(viewLifecycleOwner, {
             Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
         })
+    }
+
+    private fun refreshData() {
+        viewModel.getTicker("BTCEUR")
+
+        val tickerResponse = TickerResponse.createFromResponse(viewModel.ticker.value.toString())
+        Log.d("TAG", "${Date()}: $tickerResponse")
     }
 }

@@ -23,9 +23,10 @@ class TickerViewModel(application: Application) : AndroidViewModel(application){
     fun getTicker(tradingPair: String) {
         viewModelScope.launch {
             try {
-                //the triviaRepository sets it's own livedata property
-                //our own trivia property points to this one
-                bitfinexRepository.getTicker(tradingPair)
+                // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
+                // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
+                // for all tradingPairs requested
+                bitfinexRepository.getTicker("t$tradingPair")
             } catch (error: BitfinexRepository.BitfinexApiError) {
                 _errorText.value = error.message
                 Log.e("Bitfinex API error", error.cause.toString())

@@ -1,6 +1,7 @@
 package com.example.cryptotrade.model
 
-data class TickerResponse(
+data class Ticker(
+    val symbol: String,
     val bid: Double,
     val bidSize: Double,
     val ask: Double,

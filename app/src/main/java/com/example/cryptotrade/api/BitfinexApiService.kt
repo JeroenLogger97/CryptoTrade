@@ -2,7 +2,6 @@ package com.example.cryptotrade.api
 
 import com.example.cryptotrade.model.HistoryResponse
 import com.example.cryptotrade.model.MultipleTickersResponse
-import com.example.cryptotrade.model.TickerResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -11,9 +10,6 @@ interface BitfinexApiService {
 
     @GET("tickers")
     suspend fun getMultipleTickers(@Query("symbols", encoded = true) symbols: String) : MultipleTickersResponse
-
-    @GET("ticker/{tradingPair}")
-    suspend fun getTicker(@Path("tradingPair") tradingPair: String) : TickerResponse
 
     @GET("trades/{tradingPair}/hist?limit=5")
     suspend fun getHistory(@Path("tradingPair") tradingPair: String,

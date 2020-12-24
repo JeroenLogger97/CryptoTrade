@@ -6,21 +6,16 @@ import com.example.cryptotrade.api.BitfinexApi
 import com.example.cryptotrade.api.BitfinexApiService
 import com.example.cryptotrade.model.HistoryResponse
 import com.example.cryptotrade.model.MultipleTickersResponse
-import com.example.cryptotrade.model.TickerResponse
 import kotlinx.coroutines.withTimeout
 
 class BitfinexRepository {
 
     private val bitfinexApiService: BitfinexApiService = BitfinexApi.createApi()
     private val _tickers: MutableLiveData<MultipleTickersResponse> = MutableLiveData()
-    private val _ticker: MutableLiveData<TickerResponse> = MutableLiveData()
     private val _history: MutableLiveData<HistoryResponse> = MutableLiveData()
 
     val tickers: LiveData<MultipleTickersResponse>
         get() = _tickers
-
-    val ticker: LiveData<TickerResponse>
-        get() = _ticker
 
     val history: LiveData<HistoryResponse>
         get() = _history
@@ -41,18 +36,6 @@ class BitfinexRepository {
             _tickers.value = result
         } catch (error: Throwable) {
             throw BitfinexApiError("Unable to get multiple tickers", error)
-        }
-    }
-
-    suspend fun getTicker(tradingPair: String) {
-        try {
-            val result = withTimeout(5_000) {
-                bitfinexApiService.getTicker(addPrefixToTradingPair(tradingPair))
-            }
-
-            _ticker.value = result
-        } catch (error: Throwable) {
-            throw BitfinexApiError("Unable to get ticker", error)
         }
     }
 

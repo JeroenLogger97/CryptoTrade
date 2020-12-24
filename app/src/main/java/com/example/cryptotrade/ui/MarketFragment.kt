@@ -1,24 +1,15 @@
 package com.example.cryptotrade.ui
 
-import android.os.Build
 import android.os.Bundle
-import android.provider.SyncStateContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import com.example.cryptotrade.adapter.TradingPairAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
-import com.example.cryptotrade.model.TickerResponse
-import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
-import kotlinx.android.synthetic.main.fragment_market.*
-import kotlinx.coroutines.channels.ticker
 import kotlin.concurrent.fixedRateTimer
 
 /**
@@ -55,7 +46,6 @@ class MarketFragment : Fragment() {
         initViews()
 
         // initialize data on load
-        viewModel.getTicker("BTCEUR")
         viewModel.getTickers("BTCUSD", "LTCUSD")
 
         startRefreshTimer()
@@ -63,7 +53,6 @@ class MarketFragment : Fragment() {
 
     private fun initViews() {
         observeTickers()
-        observeTicker()
         observeError()
 
 //        rvTradingPairs.adapter = tickerAdapter
@@ -82,12 +71,6 @@ class MarketFragment : Fragment() {
 
     private fun observeTickers() {
         viewModel.tickers.observe(viewLifecycleOwner, {
-            Log.d(Constants.TAG, "TICKERS::::: ${viewModel.tickers.value}")
-        })
-    }
-
-    private fun observeTicker() {
-        viewModel.ticker.observe(viewLifecycleOwner, {
             binding.tvLastPrice.text = it.toString()
         })
     }
@@ -99,6 +82,6 @@ class MarketFragment : Fragment() {
     }
 
     private fun refreshTicker() {
-        viewModel.getTicker("BTCEUR")
+        viewModel.getTickers("BTCEUR")
     }
 }

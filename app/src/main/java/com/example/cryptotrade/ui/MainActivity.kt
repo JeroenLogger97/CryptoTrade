@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.fab.setOnClickListener {
-            viewModel.getTicker("BTCUSD")
+            viewModel.getTickers("BTCUSD")
         }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

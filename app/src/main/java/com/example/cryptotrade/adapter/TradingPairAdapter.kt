@@ -8,14 +8,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptotrade.R
-import com.example.cryptotrade.model.TickerResponse
+import com.example.cryptotrade.model.Ticker
 import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
 
 //todo
 // https://stackoverflow.com/questions/61364874/view-models-for-recyclerview-items
 // https://stackoverflow.com/questions/47941537/notify-observer-when-item-is-added-to-list-of-livedata
-class TradingPairAdapter(private val liveDataToObserve: LiveData<TickerResponse>, private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TradingPairAdapter.ViewHolder>() {
+class TradingPairAdapter(private val liveDataToObserve: LiveData<Ticker>, private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TradingPairAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
@@ -24,7 +24,7 @@ class TradingPairAdapter(private val liveDataToObserve: LiveData<TickerResponse>
             }
         }
 
-        fun databind(ticker: TickerResponse) {
+        fun databind(ticker: Ticker) {
             Log.d(Constants.TAG, "databind called on $ticker")
             itemView.tvPrice.text = ticker.lastPrice.toString()
             itemView.tv24hChange.text = "+ 5.1% (TODO)"

@@ -1,11 +1,10 @@
 package com.example.cryptotrade.api
 
+import com.example.cryptotrade.api.converter.CustomConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 class BitfinexApi {
     companion object {
@@ -21,11 +20,17 @@ class BitfinexApi {
             val triviaApi = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(converterFactory())
                 .build()
 
             // Return the Retrofit NumbersApiService
             return triviaApi.create(BitfinexApiService::class.java)
         }
+
+        private fun converterFactory() : Converter.Factory {
+//            return ScalarsConverterFactory.create()
+            return CustomConverterFactory.create()
+        }
     }
+
 }

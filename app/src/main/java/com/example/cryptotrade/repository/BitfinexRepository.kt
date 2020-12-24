@@ -24,7 +24,7 @@ class BitfinexRepository {
                 bitfinexApiService.getTicker(tradingPair)
             }
 
-            _ticker.value = result
+            _ticker.value = result.toString()
         } catch (error: Throwable) {
             throw BitfinexApiError("Unable to get ticker", error)
         }

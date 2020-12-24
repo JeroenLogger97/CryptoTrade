@@ -31,7 +31,7 @@ class MarketFragment : Fragment() {
 
     // todo: set refresh time to something accepted, like 10_000
     // the time in ms the app should wait before sending a new API request to update the UI
-    private val refreshTimeInMillis: Long = 1_120_000
+    private val refreshTimeInMillis: Long = 1_0_000
     private val initialDelayInMillis: Long = 5_000
 
     private val viewModel: TickerViewModel by activityViewModels()
@@ -52,7 +52,7 @@ class MarketFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeTicker()
-        observeHistory()
+//        observeHistory()
 
         // call first time manually to ensure initial data is present
         viewModel.getTicker("BTCEUR")
@@ -61,17 +61,17 @@ class MarketFragment : Fragment() {
             refreshHistory()
         }
 
-//        fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
-//            refreshTicker()
-//        }
+        fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
+            refreshTicker()
+        }
     }
 
     private fun observeTicker() {
         //todo: history edits wrong text view: why? make separate history fragment to send things to,
         // try sending multiple tickers as well? LiveData<List<String>>?
-//        viewModel.ticker.observe(viewLifecycleOwner, {
-//            binding.tvLastPrice.text = it
-//        })
+        viewModel.ticker.observe(viewLifecycleOwner, {
+            binding.tvLastPrice.text = it
+        })
 
         // Observe the error message.
         viewModel.errorText.observe(viewLifecycleOwner, {
@@ -87,9 +87,6 @@ class MarketFragment : Fragment() {
 
     private fun refreshTicker() {
         viewModel.getTicker("BTCEUR")
-
-        val tickerResponse = TickerResponse.createFromResponse(viewModel.ticker.value.toString())
-        Log.d("TAG", "${Date()}: $tickerResponse")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

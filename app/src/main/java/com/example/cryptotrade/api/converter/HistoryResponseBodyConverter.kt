@@ -2,10 +2,9 @@ package com.example.cryptotrade.api.converter
 
 import android.util.Log
 import com.example.cryptotrade.model.HistoryResponse
-import com.example.cryptotrade.repository.BitfinexRepository
+import com.example.cryptotrade.util.Constants
 import okhttp3.ResponseBody
 import retrofit2.Converter
-import java.lang.IllegalArgumentException
 
 class HistoryResponseBodyConverter : Converter<ResponseBody, HistoryResponse> {
 
@@ -21,8 +20,8 @@ class HistoryResponseBodyConverter : Converter<ResponseBody, HistoryResponse> {
         val firstMatch = "\\[\\[.*?]".toRegex().find(responseAsString)?.value
                 ?: throw IllegalArgumentException("response body of history request is not in expected format")
 
-        Log.d("TAG", "response: $responseAsString")
-        Log.d("TAG", "match: $firstMatch")
+        Log.d(Constants.TAG, "response: $responseAsString")
+        Log.d(Constants.TAG, "match: $firstMatch")
 
         val values = firstMatch.substring(2, firstMatch.length - 1).split(",")
 

@@ -10,21 +10,24 @@ import com.example.cryptotrade.repository.BitfinexRepository
 import com.example.cryptotrade.util.Constants
 import kotlinx.coroutines.launch
 
-class TickerViewModel(application: Application) : AndroidViewModel(application) {
+class HistoryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val bitfinexRepository = BitfinexRepository()
 
-    val ticker = bitfinexRepository.ticker
+    val history = bitfinexRepository.history
 
     private val _errorText: MutableLiveData<String> = MutableLiveData()
 
     val errorText: LiveData<String>
         get() = _errorText
 
-    fun getTicker(tradingPair: String) {
+    fun getHistory(tradingPair: String,
+                   startInMillis: Long,
+                   endInMillis: Long) {
         viewModelScope.launch {
             try {
-                bitfinexRepository.getTicker(addPrefixToTradingPair(tradingPair))
+                bitfinexRepository.getHistory(addPrefixToTradingPair(tradingPair),
+                        startInMillis.toString(), endInMillis.toString())
             } catch (error: BitfinexRepository.BitfinexApiError) {
                 onError(error)
             }

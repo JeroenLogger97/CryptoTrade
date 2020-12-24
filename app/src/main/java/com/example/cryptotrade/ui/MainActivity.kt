@@ -1,16 +1,16 @@
 package com.example.cryptotrade.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.ActivityMainBinding
+import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = "CryptoTrade"
 
         binding.toolbar.setNavigationOnClickListener {
-            Log.d("TAG", "CLICKED MENU")
+            Log.d(Constants.TAG, "CLICKED MENU")
         }
     }
 

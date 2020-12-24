@@ -2,6 +2,7 @@ package com.example.cryptotrade.api.converter
 
 import android.util.Log
 import com.example.cryptotrade.model.TickerResponse
+import com.example.cryptotrade.util.Constants
 import okhttp3.ResponseBody
 import retrofit2.Converter
 
@@ -21,7 +22,7 @@ class TickerResponseBodyConverter : Converter<ResponseBody, TickerResponse> {
     override fun convert(value: ResponseBody): TickerResponse? {
         val responseAsString = value.string()
 
-        Log.d("TAG", "convert responseBody value::: $responseAsString")
+        Log.d(Constants.TAG, "convert responseBody value::: $responseAsString")
 
         val trimmed = responseAsString.substring(1, responseAsString.length - 1)
         val values = arrayListOf<Double>()

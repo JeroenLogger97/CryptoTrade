@@ -3,11 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/MarketFragment">
+    app:startDestination="@id/marketFragment">
 
     <fragment
-        android:id="@+id/MarketFragment"
+        android:id="@+id/marketFragment"
         android:name="com.example.cryptotrade.ui.MarketFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_market"/>
+        tools:layout="@layout/fragment_market">
+    </fragment>
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.cryptotrade.ui.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+    </fragment>
+    <fragment
+        android:id="@+id/portfolioFragment"
+        android:name="com.example.cryptotrade.ui.PortfolioFragment"
+        android:label="fragment_portfolio"
+        tools:layout="@layout/fragment_portfolio" >
+    </fragment>
 </navigation>

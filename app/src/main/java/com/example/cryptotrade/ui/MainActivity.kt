@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.ActivityMainBinding
 import com.example.cryptotrade.vm.TickerViewModel
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: TickerViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
+    private val navController: NavController by lazy { findNavController(R.id.nav_host_fragment) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +52,15 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_market -> {
+                navController.navigate(R.id.marketFragment)
                 true
             }
             R.id.action_portfolio -> {
+                navController.navigate(R.id.portfolioFragment)
                 true
             }
             R.id.action_history -> {
+                navController.navigate(R.id.historyFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)

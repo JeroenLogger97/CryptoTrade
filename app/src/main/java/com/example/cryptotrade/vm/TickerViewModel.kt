@@ -14,6 +14,7 @@ class TickerViewModel(application: Application) : AndroidViewModel(application){
     private val bitfinexRepository = BitfinexRepository()
 
     val ticker = bitfinexRepository.ticker
+    val history = bitfinexRepository.history
 
     private val _errorText: MutableLiveData<String> = MutableLiveData()
 
@@ -23,14 +24,35 @@ class TickerViewModel(application: Application) : AndroidViewModel(application){
     fun getTicker(tradingPair: String) {
         viewModelScope.launch {
             try {
-                // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
-                // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
-                // for all tradingPairs requested
-                bitfinexRepository.getTicker("t$tradingPair")
+                bitfinexRepository.getTicker(addPrefixToTradingPair(tradingPair))
             } catch (error: BitfinexRepository.BitfinexApiError) {
-                _errorText.value = error.message
-                Log.e("Bitfinex API error", error.cause.toString())
+                onError(error)
             }
         }
+    }
+
+    fun getHistory(tradingPair: String,
+                   startInMillis: Long,
+                   endInMillis: Long) {
+        viewModelScope.launch {
+            try {
+                bitfinexRepository.getHistory(addPrefixToTradingPair(tradingPair),
+                    startInMillis.toString(), endInMillis.toString())
+            } catch (error: BitfinexRepository.BitfinexApiError) {
+                onError(error)
+            }
+        }
+    }
+
+    // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
+    // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
+    // for all tradingPairs requested
+    private fun addPrefixToTradingPair(tradingPair: String) : String {
+        return "t$tradingPair"
+    }
+
+    private fun onError(error: BitfinexRepository.BitfinexApiError) {
+        _errorText.value = error.message
+        Log.e("Bitfinex API error", error.cause.toString())
     }
 }

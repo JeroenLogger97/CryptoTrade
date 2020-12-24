@@ -1,8 +1,8 @@
 package com.example.cryptotrade.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -27,6 +27,14 @@ class MainActivity : AppCompatActivity() {
         binding.fab.setOnClickListener {
             viewModel.getTicker("BTCUSD")
         }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
+        supportActionBar?.title = "CryptoTrade"
+
+        binding.toolbar.setNavigationOnClickListener {
+            Log.d("TAG", "CLICKED MENU")
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -40,7 +48,15 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_market -> {
+                true
+            }
+            R.id.action_portfolio -> {
+                true
+            }
+            R.id.action_history -> {
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

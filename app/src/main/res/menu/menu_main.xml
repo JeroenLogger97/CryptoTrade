@@ -3,8 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.cryptotrade.ui.MainActivity">
     <item
-        android:id="@+id/action_settings"
+
+        android:id="@+id/action_market"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/market"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_portfolio"
+        android:orderInCategory="100"
+        android:title="@string/portfolio"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_history"
+        android:orderInCategory="100"
+        android:title="@string/history"
         app:showAsAction="never" />
 </menu>

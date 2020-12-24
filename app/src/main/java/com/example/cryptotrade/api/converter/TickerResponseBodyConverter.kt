@@ -7,6 +7,17 @@ import retrofit2.Converter
 
 class TickerResponseBodyConverter : Converter<ResponseBody, TickerResponse> {
 
+    // sample response (BTCUSD):
+    // [23180,
+    //  14.94961206,
+    //  23181,
+    //  26.117962140000007,
+    //  -682.59051648,
+    //  -0.0286,
+    //  23180,
+    //  8030.49607643,
+    //  23888,
+    //  22655]
     override fun convert(value: ResponseBody): TickerResponse? {
         val responseAsString = value.string()
 

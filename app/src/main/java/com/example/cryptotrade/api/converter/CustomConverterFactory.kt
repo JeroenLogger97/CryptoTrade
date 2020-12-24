@@ -1,6 +1,6 @@
 package com.example.cryptotrade.api.converter
 
-import android.util.Log
+import com.example.cryptotrade.model.HistoryResponse
 import com.example.cryptotrade.model.TickerResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -16,13 +16,15 @@ class CustomConverterFactory : Converter.Factory() {
     }
 
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
-        Log.d("TAG", "requested type:       $type")
-        Log.d("TAG", "ticker response type: ${TickerResponse::class.java}")
-
-        if (type == TickerResponse::class.java) {
-            return TickerResponseBodyConverter()
+        return when (type) {
+            TickerResponse::class.java -> {
+                TickerResponseBodyConverter()
+            }
+            HistoryResponse::class.java -> {
+                HistoryResponseBodyConverter()
+            }
+            else -> null
         }
 
-        return null
     }
 }

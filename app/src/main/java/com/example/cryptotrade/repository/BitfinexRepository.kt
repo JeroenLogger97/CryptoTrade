@@ -4,18 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.cryptotrade.api.BitfinexApi
 import com.example.cryptotrade.api.BitfinexApiService
+import com.example.cryptotrade.model.HistoryResponse
+import com.example.cryptotrade.model.TickerResponse
 import kotlinx.coroutines.withTimeout
 
 class BitfinexRepository {
 
     private val bitfinexApiService: BitfinexApiService = BitfinexApi.createApi()
-    private val _ticker: MutableLiveData<String> = MutableLiveData()
-    private val _history: MutableLiveData<String> = MutableLiveData()
+    private val _ticker: MutableLiveData<TickerResponse> = MutableLiveData()
+    private val _history: MutableLiveData<HistoryResponse> = MutableLiveData()
 
-    val ticker: LiveData<String>
+    val ticker: LiveData<TickerResponse>
         get() = _ticker
 
-    val history: LiveData<String>
+    val history: LiveData<HistoryResponse>
         get() = _history
 
     suspend fun getTicker(tradingPair: String) {
@@ -24,7 +26,7 @@ class BitfinexRepository {
                 bitfinexApiService.getTicker(tradingPair)
             }
 
-            _ticker.value = result.toString()
+            _ticker.value = result
         } catch (error: Throwable) {
             throw BitfinexApiError("Unable to get ticker", error)
         }
@@ -38,9 +40,9 @@ class BitfinexRepository {
                 bitfinexApiService.getHistory(tradingPair, startInMillis, endInMillis)
             }
 
-            _ticker.value = result
+            _history.value = result
         } catch (error: Throwable) {
-            throw BitfinexApiError("Unable to get ticker", error)
+            throw BitfinexApiError("Unable to get history", error)
         }
     }
 

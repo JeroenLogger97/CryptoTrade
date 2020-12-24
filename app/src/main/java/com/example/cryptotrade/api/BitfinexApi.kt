@@ -28,7 +28,6 @@ class BitfinexApi {
         }
 
         private fun converterFactory() : Converter.Factory {
-//            return ScalarsConverterFactory.create()
             return CustomConverterFactory.create()
         }
     }

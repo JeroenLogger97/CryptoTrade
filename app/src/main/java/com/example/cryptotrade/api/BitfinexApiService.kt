@@ -1,5 +1,6 @@
 package com.example.cryptotrade.api
 
+import com.example.cryptotrade.model.HistoryResponse
 import com.example.cryptotrade.model.TickerResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -13,5 +14,5 @@ interface BitfinexApiService {
     @GET("trades/{tradingPair}/hist?limit=5")
     suspend fun getHistory(@Path("tradingPair") tradingPair: String,
                            @Query("start") start: String,
-                           @Query("end") end: String) : String
+                           @Query("end") end: String) : HistoryResponse
 }

@@ -29,9 +29,10 @@ import kotlin.concurrent.fixedRateTimer
  */
 class MarketFragment : Fragment() {
 
-    // todo: set refresh time to something accepted, like 10_000
+    private val doRefresh = false
+
     // the time in ms the app should wait before sending a new API request to update the UI
-    private val refreshTimeInMillis: Long = 1_0_000
+    private val refreshTimeInMillis: Long = 10_000
     private val initialDelayInMillis: Long = 5_000
 
     private val viewModel: TickerViewModel by activityViewModels()
@@ -51,37 +52,47 @@ class MarketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeTicker()
-//        observeHistory()
-
-        // call first time manually to ensure initial data is present
-        viewModel.getTicker("BTCEUR")
-
         _binding?.btnRefresh?.setOnClickListener {
             refreshHistory()
         }
 
-        fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
-            refreshTicker()
+        initViews()
+
+        // initialize data on load
+        viewModel.getTicker("BTCEUR")
+
+        startRefreshTimer()
+    }
+
+    private fun startRefreshTimer() {
+        if (doRefresh) {
+            fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
+                refreshTicker()
+            }
         }
     }
 
-    private fun observeTicker() {
-        //todo: history edits wrong text view: why? make separate history fragment to send things to,
-        // try sending multiple tickers as well? LiveData<List<String>>?
-        viewModel.ticker.observe(viewLifecycleOwner, {
-            binding.tvLastPrice.text = it
-        })
+    private fun initViews() {
+        observeTicker()
+        observeHistory()
+        observeError()
+    }
 
-        // Observe the error message.
-        viewModel.errorText.observe(viewLifecycleOwner, {
-            Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+    private fun observeTicker() {
+        viewModel.ticker.observe(viewLifecycleOwner, {
+            binding.tvLastPrice.text = it.toString()
         })
     }
 
     private fun observeHistory() {
         viewModel.history.observe(viewLifecycleOwner, {
-            binding.tvHistory.text = it
+            binding.tvHistory.text = it.toString()
+        })
+    }
+
+    private fun observeError() {
+        viewModel.errorText.observe(viewLifecycleOwner, {
+            Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -96,12 +107,10 @@ class MarketFragment : Fragment() {
             .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         // take a period of 30 minutes, we limit on 5 so we only get 5 back from the API.
-        // we need to make sure there is at least some data retrieved though
+        // we do need to make sure there is at least some data retrieved though, so that's why
+        // we get data from 30 minutes to make sure there is at least one transaction and price
         val to: Long = from + (30 * 60 * 1_000)
 
         viewModel.getHistory("BTCUSD", from, to)
-
-        val historyResponse = HistoryResponse.createFromResponse(viewModel.history.value.toString())
-        Log.d("TAG", "$historyResponse")
     }
 }

@@ -17,14 +17,14 @@ class BitfinexApi {
                 .build()
 
             // Create the Retrofit instance
-            val triviaApi = Retrofit.Builder()
+            val bitfinexApi = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addConverterFactory(converterFactory())
                 .build()
 
             // Return the Retrofit NumbersApiService
-            return triviaApi.create(BitfinexApiService::class.java)
+            return bitfinexApi.create(BitfinexApiService::class.java)
         }
 
         private fun converterFactory() : Converter.Factory {

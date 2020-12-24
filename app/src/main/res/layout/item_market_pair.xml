@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tvPair"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="2"
+        android:text="BTC/USD"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="$19.001,53"
+        app:layout_constraintStart_toEndOf="@+id/tvPair" />
+
+    <TextView
+        android:id="@+id/tv24hChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="24h change" />
+
+    <Button
+        android:id="@+id/btnBuy"
+        android:minHeight="0dp"
+        android:width="0dp"
+        android:paddingHorizontal="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
+        android:text="Buy" />
+
+    <Button
+        android:id="@+id/btnSell"
+        android:minHeight="0dp"
+        android:width="0dp"
+        android:paddingHorizontal="4dp"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/red"
+        android:text="Sell" />
+
+</LinearLayout>

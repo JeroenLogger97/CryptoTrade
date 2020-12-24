@@ -9,8 +9,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import com.example.cryptotrade.adapter.TradingPairAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
+import com.example.cryptotrade.model.TickerResponse
 import com.example.cryptotrade.vm.TickerViewModel
+import kotlinx.android.synthetic.main.fragment_market.*
+import kotlinx.coroutines.channels.ticker
 import kotlin.concurrent.fixedRateTimer
 
 /**
@@ -28,6 +33,8 @@ class MarketFragment : Fragment() {
     private var _binding: FragmentMarketBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var tickerAdapter: TradingPairAdapter
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -40,6 +47,8 @@ class MarketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        tickerAdapter = TradingPairAdapter(viewModel.ticker, viewLifecycleOwner)
+
         initViews()
 
         // initialize data on load
@@ -48,17 +57,21 @@ class MarketFragment : Fragment() {
         startRefreshTimer()
     }
 
+    private fun initViews() {
+        observeTicker()
+        observeError()
+
+//        rvTradingPairs.adapter = tickerAdapter
+//
+//        tickerAdapter.notifyDataSetChanged()
+    }
+
     private fun startRefreshTimer() {
         if (doRefresh) {
             fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
                 refreshTicker()
             }
         }
-    }
-
-    private fun initViews() {
-        observeTicker()
-        observeError()
     }
 
     private fun observeTicker() {

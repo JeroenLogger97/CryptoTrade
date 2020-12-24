@@ -12,6 +12,7 @@ import com.example.cryptotrade.model.TickerResponse
 import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
 
+//todo
 // https://stackoverflow.com/questions/61364874/view-models-for-recyclerview-items
 // https://stackoverflow.com/questions/47941537/notify-observer-when-item-is-added-to-list-of-livedata
 class TradingPairAdapter(private val liveDataToObserve: LiveData<TickerResponse>, private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TradingPairAdapter.ViewHolder>() {

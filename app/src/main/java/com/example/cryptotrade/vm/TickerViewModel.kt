@@ -15,28 +15,39 @@ class TickerViewModel(application: Application) : AndroidViewModel(application) 
     private val bitfinexRepository = BitfinexRepository()
 
     val ticker = bitfinexRepository.ticker
+    val tickers = bitfinexRepository.tickers
 
     private val _errorText: MutableLiveData<String> = MutableLiveData()
 
     val errorText: LiveData<String>
         get() = _errorText
 
-    fun getTicker(tradingPair: String) {
+    fun getTickers(vararg tradingPairs: String) {
         viewModelScope.launch {
             try {
-                bitfinexRepository.getTicker(addPrefixToTradingPair(tradingPair))
+                bitfinexRepository.getMultipleTickers(*tradingPairs)
             } catch (error: BitfinexRepository.BitfinexApiError) {
                 onError(error)
             }
         }
     }
 
-    // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
-    // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
-    // for all tradingPairs requested
-    private fun addPrefixToTradingPair(tradingPair: String) : String {
-        return "t$tradingPair"
+    fun getTicker(tradingPair: String) {
+        viewModelScope.launch {
+            try {
+                bitfinexRepository.getTicker(tradingPair)
+            } catch (error: BitfinexRepository.BitfinexApiError) {
+                onError(error)
+            }
+        }
     }
+
+//    // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
+//    // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
+//    // for all tradingPairs requested
+//    private fun addPrefixToTradingPair(tradingPair: String) : String {
+//        return "t$tradingPair"
+//    }
 
     private fun onError(error: BitfinexRepository.BitfinexApiError) {
         _errorText.value = error.message

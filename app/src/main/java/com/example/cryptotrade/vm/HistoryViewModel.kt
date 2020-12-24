@@ -26,7 +26,7 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
                    endInMillis: Long) {
         viewModelScope.launch {
             try {
-                bitfinexRepository.getHistory(addPrefixToTradingPair(tradingPair),
+                bitfinexRepository.getHistory(tradingPair,
                         startInMillis.toString(), endInMillis.toString())
             } catch (error: BitfinexRepository.BitfinexApiError) {
                 onError(error)
@@ -34,12 +34,12 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
-    // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
-    // for all tradingPairs requested
-    private fun addPrefixToTradingPair(tradingPair: String) : String {
-        return "t$tradingPair"
-    }
+//    // add a 't' before trading pair: Bitfinex API uses the prefix 't' for trading pairs
+//    // and 'f' for funding. we are only interested in the trading pairs, so prefix a 't'
+//    // for all tradingPairs requested
+//    private fun addPrefixToTradingPair(tradingPair: String) : String {
+//        return "t$tradingPair"
+//    }
 
     private fun onError(error: BitfinexRepository.BitfinexApiError) {
         _errorText.value = error.message

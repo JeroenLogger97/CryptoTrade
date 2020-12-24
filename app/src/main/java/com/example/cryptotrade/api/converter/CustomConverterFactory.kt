@@ -1,6 +1,7 @@
 package com.example.cryptotrade.api.converter
 
 import com.example.cryptotrade.model.HistoryResponse
+import com.example.cryptotrade.model.MultipleTickersResponse
 import com.example.cryptotrade.model.TickerResponse
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -22,6 +23,9 @@ class CustomConverterFactory : Converter.Factory() {
             }
             HistoryResponse::class.java -> {
                 HistoryResponseBodyConverter()
+            }
+            MultipleTickersResponse::class.java -> {
+                MultipleTickersResponseBodyConverter()
             }
             else -> null
         }

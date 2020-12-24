@@ -2,6 +2,8 @@ package com.example.cryptotrade.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.provider.SyncStateContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.lifecycle.LiveData
 import com.example.cryptotrade.adapter.TradingPairAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
 import com.example.cryptotrade.model.TickerResponse
+import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
 import kotlinx.android.synthetic.main.fragment_market.*
 import kotlinx.coroutines.channels.ticker
@@ -53,11 +56,13 @@ class MarketFragment : Fragment() {
 
         // initialize data on load
         viewModel.getTicker("BTCEUR")
+        viewModel.getTickers("BTCUSD", "LTCUSD")
 
         startRefreshTimer()
     }
 
     private fun initViews() {
+        observeTickers()
         observeTicker()
         observeError()
 
@@ -70,8 +75,15 @@ class MarketFragment : Fragment() {
         if (doRefresh) {
             fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
                 refreshTicker()
+                viewModel.getTickers("BTCUSD", "LTCUSD")
             }
         }
+    }
+
+    private fun observeTickers() {
+        viewModel.tickers.observe(viewLifecycleOwner, {
+            Log.d(Constants.TAG, "TICKERS::::: ${viewModel.tickers.value}")
+        })
     }
 
     private fun observeTicker() {

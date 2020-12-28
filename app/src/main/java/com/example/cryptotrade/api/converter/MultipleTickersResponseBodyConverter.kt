@@ -6,6 +6,7 @@ import okhttp3.ResponseBody
 import retrofit2.Converter
 
 class MultipleTickersResponseBodyConverter : Converter<ResponseBody, MultipleTickersResponse> {
+    //todo limit amount of digits for each field: layout doesn't look good if long numbers come through
 
     // sample response (BTCUSD, LTCUSD):
     // [["tBTCUSD",23227,21.791856230000004,23228,11.09254416,-364.80335253,-0.0155,23227.19664747,6368.72260788,23671.74173591,22655],
@@ -22,11 +23,12 @@ class MultipleTickersResponseBodyConverter : Converter<ResponseBody, MultipleTic
             val values = arrayListOf<Double>()
             var symbol = ""
 
-            val trimmedArray = ticker.value.substring(0, ticker.value.length - 1).split(",")
+            val trimmedArray = ticker.value.substring(1, ticker.value.length - 1).split(",")
             for ((index, field) in trimmedArray.withIndex()) {
                 if (index == 0) {
                     // don't add first value to values, since that is a string
-                    symbol = field
+                    // symbol is returned as "tBTCUSD" so trim the first 2 and last char
+                    symbol = field.substring(2, field.length - 1)
                     continue
                 }
                 values.add(field.toDouble())

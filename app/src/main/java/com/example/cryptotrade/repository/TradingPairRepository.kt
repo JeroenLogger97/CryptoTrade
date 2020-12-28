@@ -1,9 +1,18 @@
 package com.example.cryptotrade.repository
 
+import com.example.cryptotrade.model.database.Cryptocurrency
+import com.example.cryptotrade.model.database.FiatCurrency
+
 class TradingPairRepository {
 
     fun getAll() : List<String> {
-        return listOf("BTCUSD", "LTCUSD")
+        val coins = ArrayList<String>()
+
+        for (value in Cryptocurrency.values()) {
+            coins.add(value.toString() + FiatCurrency.USD.toString())
+        }
+
+        return coins
     }
 
 }

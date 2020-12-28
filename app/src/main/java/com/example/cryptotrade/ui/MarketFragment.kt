@@ -1,15 +1,25 @@
 package com.example.cryptotrade.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.cryptotrade.adapter.TradingPairAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cryptotrade.adapter.TickerAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
+import com.example.cryptotrade.repository.TradingPairRepository
+import com.example.cryptotrade.repository.TradingTransactionRepository
+import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
+import kotlinx.android.synthetic.main.fragment_market.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.fixedRateTimer
 
 /**
@@ -17,7 +27,7 @@ import kotlin.concurrent.fixedRateTimer
  */
 class MarketFragment : Fragment() {
 
-    private val doRefresh = false
+    private val doRefresh = true
 
     // the time in ms the app should wait before sending a new API request to update the UI
     private val refreshTimeInMillis: Long = 10_000
@@ -27,7 +37,8 @@ class MarketFragment : Fragment() {
     private var _binding: FragmentMarketBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var tickerAdapter: TradingPairAdapter
+    private lateinit var tickerAdapter: TickerAdapter
+    private val tradingPairRepository = TradingPairRepository()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -41,30 +52,63 @@ class MarketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        tickerAdapter = TradingPairAdapter(viewModel.ticker, viewLifecycleOwner)
+        tickerAdapter = TickerAdapter(viewModel.tickers, viewLifecycleOwner)
 
         initViews()
 
         // initialize data on load
-        viewModel.getTickers("BTCUSD", "LTCUSD")
+        refreshTicker()
 
         startRefreshTimer()
+
+        val repo = TradingTransactionRepository(requireContext())
+        logAllTransactions(repo)
+
+        tickerAdapter.setOnItemClickBuyListener {
+            val buyFragment = BottomSheetBuyFragment()
+
+            val bundle = Bundle()
+            bundle.putString(SYMBOL_KEY, it.symbol)
+
+            buyFragment.arguments = bundle
+            buyFragment.show(parentFragmentManager, buyFragment.tag)
+        }
+
+        tickerAdapter.setOnItemClickSellListener {
+            val sellFragment = BottomSheetSellFragment()
+
+            val bundle = Bundle()
+            bundle.putString(SYMBOL_KEY, it.symbol)
+
+            sellFragment.arguments = bundle
+            sellFragment.show(parentFragmentManager, sellFragment.tag)
+        }
+
+    }
+
+    private fun logAllTransactions(repo : TradingTransactionRepository) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val all = withContext(Dispatchers.IO) {
+                repo.getAllTradingTransactions()
+            }
+            Log.d(Constants.TAG, "all trading transactions: $all")
+        }
     }
 
     private fun initViews() {
         observeTickers()
         observeError()
 
-//        rvTradingPairs.adapter = tickerAdapter
-//
-//        tickerAdapter.notifyDataSetChanged()
+        rvTradingPairs.adapter = tickerAdapter
+
+        rvTradingPairs.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        tickerAdapter.notifyDataSetChanged()
     }
 
     private fun startRefreshTimer() {
         if (doRefresh) {
             fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
                 refreshTicker()
-                viewModel.getTickers("BTCUSD", "LTCUSD")
             }
         }
     }
@@ -72,6 +116,8 @@ class MarketFragment : Fragment() {
     private fun observeTickers() {
         viewModel.tickers.observe(viewLifecycleOwner, {
             binding.tvLastPrice.text = it.toString()
+
+            tickerAdapter.notifyDataSetChanged()
         })
     }
 
@@ -82,6 +128,6 @@ class MarketFragment : Fragment() {
     }
 
     private fun refreshTicker() {
-        viewModel.getTickers("BTCEUR")
+        viewModel.getTickers(*tradingPairRepository.getAll().toTypedArray())
     }
 }

@@ -77,7 +77,7 @@ class BitfinexRepository {
             val cryptocurrency = Cryptocurrency.fromTradingPair(tradingPair)
             _pricesAtStartOfDay.value?.set(cryptocurrency, result.price)
         } catch (error: Throwable) {
-            throw BitfinexApiError("Unable to get history", error)
+            throw BitfinexApiError("Unable to get price at start of day for $tradingPair", error)
         }
     }
 

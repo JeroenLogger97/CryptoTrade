@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptotrade.adapter.TickerAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
+import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
 import com.example.cryptotrade.repository.TradingTransactionRepository
 import com.example.cryptotrade.util.Constants
@@ -52,12 +53,13 @@ class MarketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tickerAdapter = TickerAdapter(viewModel.tickers, viewLifecycleOwner)
+        tickerAdapter = TickerAdapter(viewModel.tickers, viewModel.pricesAtStartOfDay, viewLifecycleOwner)
 
         initViews()
 
         // initialize data on load
-        refreshTicker()
+        refreshTickers()
+        refreshPriceAtStartOfDay()
 
         startRefreshTimer()
 
@@ -108,7 +110,7 @@ class MarketFragment : Fragment() {
     private fun startRefreshTimer() {
         if (doRefresh) {
             fixedRateTimer("refreshApiData", false, initialDelayInMillis, refreshTimeInMillis) {
-                refreshTicker()
+                refreshTickers()
             }
         }
     }
@@ -127,7 +129,16 @@ class MarketFragment : Fragment() {
         })
     }
 
-    private fun refreshTicker() {
+    private fun refreshTickers() {
         viewModel.getTickers(*tradingPairRepository.getAll().toTypedArray())
+    }
+
+    private fun refreshPriceAtStartOfDay() {
+        // todo: call this once every x hours
+        //  or in bitfinex repository: get value of static '24h' point:
+        //  example: time is 13:31, get 24h price at 13:00
+        for (pair in tradingPairRepository.getAll()) {
+            viewModel.getPriceAtStartOfDay(pair)
+        }
     }
 }

@@ -10,11 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptotrade.R
 import com.example.cryptotrade.model.MultipleTickersResponse
 import com.example.cryptotrade.model.Ticker
+import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
 import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
+import kotlin.collections.HashMap
 
-class TickerAdapter(private val liveDataToObserve: LiveData<MultipleTickersResponse>, private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TickerAdapter.ViewHolder>() {
+// todo: make priceAtStartOfDayLiveData custom object that has Map<Cryptocurrency, Double> with last prices per crypto
+//  then every crypto has it's own last price
+class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersResponse>,
+                    private val priceAtStartOfDayLiveData: LiveData<HashMap<Cryptocurrency, Double>>,
+                    private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TickerAdapter.ViewHolder>() {
 
     private var buyListener: ((item: Ticker) -> Unit)? = null
     private var sellListener: ((item: Ticker) -> Unit)? = null
@@ -30,21 +36,36 @@ class TickerAdapter(private val liveDataToObserve: LiveData<MultipleTickersRespo
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             //called once for each recyclerview entry
-            Log.d(Constants.TAG, "initialize viewholder, set live data observe")
+            Log.d(Constants.TAG, "TickerAdapter :: initialize viewholder, set live data observe")
 
-            liveDataToObserve.observe(lifecycleOwner) {
-                Log.d(Constants.TAG, "LIVE DATA UPDATED IN TICKER ADAPTER")
+            tickersLiveData.observe(lifecycleOwner) {
+                Log.d(Constants.TAG, "TickerAdapter :: tickers updated")
+            }
+
+            priceAtStartOfDayLiveData.observe(lifecycleOwner) {
+                Log.d(Constants.TAG, "TickerAdapter :: price at start of day updated to ${priceAtStartOfDayLiveData.value}")
+//                priceAtStartOfDay = priceAtStartOfDayLiveData.value!!
             }
         }
 
         fun databind(ticker: Ticker) {
             // todo:
             //  - cache old price and flash price green or red depending on a rise or fall
-            //  - call 24h price once in init block and cache the result, after that read from cache (start of day, 00:00)
             itemView.tvPair.text = ticker.symbol
+
+            // todo: if total length of last price is longer then x: round decimal places to 2
             itemView.tvPrice.text = ticker.lastPrice.toString()
-            itemView.tv24hChange.text = "+ 5.1% (TODO)"
+
+            val cryptocurrency = Cryptocurrency.fromTradingPair(ticker.symbol)
+            val change = priceAtStartOfDayLiveData.value?.get(cryptocurrency)?.let { calculateChange(it, ticker.lastPrice) }
+
+            itemView.tv24hChange.text = "$change%"
         }
+    }
+
+    private fun calculateChange(start: Double, current: Double) : Double {
+        val change = (current - start) / start * 100
+        return String.format("%.2f", change).toDouble()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TickerAdapter.ViewHolder {
@@ -54,7 +75,7 @@ class TickerAdapter(private val liveDataToObserve: LiveData<MultipleTickersRespo
     }
 
     override fun onBindViewHolder(holder: TickerAdapter.ViewHolder, position: Int) {
-        val value = liveDataToObserve.value?.tickers?.get(position)
+        val value = tickersLiveData.value?.tickers?.get(position)
         value?.let { holder.databind(it) }
 
         holder.itemView.btnBuy.setOnClickListener {

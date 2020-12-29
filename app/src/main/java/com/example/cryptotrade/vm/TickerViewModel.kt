@@ -15,6 +15,7 @@ class TickerViewModel(application: Application) : AndroidViewModel(application) 
     private val bitfinexRepository = BitfinexRepository()
 
     val tickers = bitfinexRepository.tickers
+    val pricesAtStartOfDay = bitfinexRepository.pricesAtStartOfDay
 
     private val _errorText: MutableLiveData<String> = MutableLiveData()
 
@@ -25,6 +26,16 @@ class TickerViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             try {
                 bitfinexRepository.getMultipleTickers(*tradingPairs)
+            } catch (error: BitfinexRepository.BitfinexApiError) {
+                onError(error)
+            }
+        }
+    }
+
+    fun getPriceAtStartOfDay(tradingPair: String) {
+        viewModelScope.launch {
+            try {
+                bitfinexRepository.getPriceAtStartOfDay(tradingPair)
             } catch (error: BitfinexRepository.BitfinexApiError) {
                 onError(error)
             }

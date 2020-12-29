@@ -21,34 +21,31 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
+            android:layout_marginTop="8dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
+            android:ems="5"
             android:text="Pair" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="40dp"
+            android:layout_weight="0"
+            android:layout_marginTop="8dp"
+            android:ems="4"
             android:text="Price" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="32dp"
+            android:layout_weight="0"
+            android:ems="5"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
             android:text="24h change" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="128dp"
-            android:layout_height="0dp"
-            android:minHeight="0dp"
-            android:layout_weight="1"
-            android:width="0dp"
-            android:text="Button" />
     </LinearLayout>
 
     <TextView

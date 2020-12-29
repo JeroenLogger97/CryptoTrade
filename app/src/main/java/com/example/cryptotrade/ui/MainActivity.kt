@@ -1,5 +1,6 @@
 package com.example.cryptotrade.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,9 +11,12 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.ActivityMainBinding
-import com.example.cryptotrade.util.Constants
+import com.example.cryptotrade.util.*
 import com.example.cryptotrade.vm.TickerViewModel
 
+// todo:
+//  - add start popup screen where you can choose your starting money (100, 1000, 10000)
+//  - add difficulty in introduction screen: easy no commission, hard high commission (+- 3%)
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: TickerViewModel by viewModels()
@@ -38,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             Log.d(Constants.TAG, "CLICKED MENU")
         }
+
+        handleAppStart()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,5 +71,49 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun handleAppStart() {
+        when (getAppStartType()) {
+            AppStartType.FIRST_TIME -> {
+                // first ever run: show introduction dialog
+//                showIntroductionDialog()
+                Preferences(applicationContext).setPreference(KEY_USD_BALANCE, 10_000)
+            }
+            else -> {
+                return
+            }
+        }
+    }
+
+    private fun getAppStartType() : AppStartType {
+        if (1 == 1) {
+            return AppStartType.FIRST_TIME
+        }
+
+        val preferences = Preferences(applicationContext)
+
+        val lastVersion = preferences.getPreferences().getInt(KEY_LAST_VERSION_RUN, DEFAULT_LAST_VERSION_RUN)
+
+        val currentVersion = packageManager?.getPackageInfo(packageName, 0)?.versionCode ?: 0
+        preferences.setPreference(KEY_LAST_VERSION_RUN, currentVersion)
+
+        return when (lastVersion) {
+            DEFAULT_LAST_VERSION_RUN -> {
+                AppStartType.FIRST_TIME
+            }
+            else -> {
+                AppStartType.NORMAL
+            }
+        }
+    }
+
+    //todo remove method
+    private fun showIntroductionDialog() {
+//        val intent = Intent(this, IntroductionFragment::class.java)
+//        intent.flags = Intent.FLAG_RECEIVER_FOREGROUND
+//        startActivity(intent)
+//
+//        findNavController(R.id.nav_host_fragment).navigate(R.id.introductionFragment)
     }
 }

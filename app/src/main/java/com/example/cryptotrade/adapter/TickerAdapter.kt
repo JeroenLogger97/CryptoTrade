@@ -16,8 +16,6 @@ import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
 import kotlin.collections.HashMap
 
-// todo: make priceAtStartOfDayLiveData custom object that has Map<Cryptocurrency, Double> with last prices per crypto
-//  then every crypto has it's own last price
 class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersResponse>,
                     private val priceAtStartOfDayLiveData: LiveData<HashMap<Cryptocurrency, Double>>,
                     private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<TickerAdapter.ViewHolder>() {
@@ -44,7 +42,6 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
 
             priceAtStartOfDayLiveData.observe(lifecycleOwner) {
                 Log.d(Constants.TAG, "TickerAdapter :: price at start of day updated to ${priceAtStartOfDayLiveData.value}")
-//                priceAtStartOfDay = priceAtStartOfDayLiveData.value!!
             }
         }
 
@@ -59,7 +56,13 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
             val cryptocurrency = Cryptocurrency.fromTradingPair(ticker.symbol)
             val change = priceAtStartOfDayLiveData.value?.get(cryptocurrency)?.let { calculateChange(it, ticker.lastPrice) }
 
-            itemView.tv24hChange.text = "$change%"
+            val plusPrefix = "+"
+            var addPlusPrefix = false
+            if (change != null && change >= 0.0) {
+                addPlusPrefix = true
+            }
+
+            itemView.tv24hChange.text = String.format("%s%.2f%s", if (addPlusPrefix) plusPrefix else "", change, "%")
         }
     }
 

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
 
@@ -11,9 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_weight="1"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="0"
+        android:ems="5"
         android:text="BTC/USD"
         android:textStyle="bold"
+        android:autoSizeTextType="none"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,23 +25,27 @@
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="$19.001,53"
+        android:layout_weight="0"
+        android:ems="5"
+        android:text="Updating..."
         app:layout_constraintStart_toEndOf="@+id/tvPair" />
 
     <TextView
         android:id="@+id/tv24hChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="24h change" />
+        android:layout_weight="0"
+        android:layout_marginEnd="20dp"
+        android:gravity="end"
+        android:ems="3"
+        android:text="" />
 
     <Button
         android:id="@+id/btnBuy"
         android:minHeight="0dp"
         android:width="0dp"
         android:paddingHorizontal="4dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/green"

@@ -33,6 +33,7 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
+            //todo remove all these logs?
             //called once for each recyclerview entry
             Log.d(Constants.TAG, "TickerAdapter :: initialize viewholder, set live data observe")
 

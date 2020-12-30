@@ -50,8 +50,11 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
             //  - cache old price and flash price green or red depending on a rise or fall
             itemView.tvPair.text = ticker.symbol
 
-            // todo: if total length of last price is longer then x: round decimal places to 2
-            itemView.tvPrice.text = ticker.lastPrice.toString()
+            if (ticker.lastPrice > 5_000) {
+                itemView.tvPrice.text = String.format("%.2f", ticker.lastPrice)
+            } else {
+                itemView.tvPrice.text = ticker.lastPrice.toString()
+            }
 
             val cryptocurrency = Cryptocurrency.fromTradingPair(ticker.symbol)
             val change = priceAtStartOfDayLiveData.value?.get(cryptocurrency)?.let { calculateChange(it, ticker.lastPrice) }

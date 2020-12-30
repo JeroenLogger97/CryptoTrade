@@ -18,6 +18,10 @@ class Preferences(context: Context) {
         return sharedPreferences
     }
 
+    //todo: remove this Any method. create methods for all types that I use, String, Double, Long:
+    // this allows more control over when an Int and Double is passed to preferences and prevents
+    // small errors where input is 0, but a double is expected. will map to Int now and throw
+    // exception when retrieving value
     fun setPreference(key: String, value: Any) {
         putValue(key, value)
     }

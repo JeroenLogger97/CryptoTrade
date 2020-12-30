@@ -1,6 +1,5 @@
 package com.example.cryptotrade.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -78,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             AppStartType.FIRST_TIME -> {
                 // first ever run: show introduction dialog
 //                showIntroductionDialog()
-                Preferences(applicationContext).setPreference(KEY_USD_BALANCE, 10_000)
+                Preferences(applicationContext).setPreference(KEY_USD_BALANCE, 10_000.0)
             }
             else -> {
                 return

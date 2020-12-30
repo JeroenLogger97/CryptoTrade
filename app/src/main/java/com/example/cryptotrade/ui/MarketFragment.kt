@@ -11,11 +11,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptotrade.adapter.TickerAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
+import com.example.cryptotrade.model.Ticker
 import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
 import com.example.cryptotrade.repository.TradingTransactionRepository
 import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_market.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,38 +65,24 @@ class MarketFragment : Fragment() {
 
         startRefreshTimer()
 
-        val repo = TradingTransactionRepository(requireContext())
-        logAllTransactions(repo)
-
         tickerAdapter.setOnItemClickBuyListener {
-            val buyFragment = BottomSheetBuyFragment()
-
-            val bundle = Bundle()
-            bundle.putString(SYMBOL_KEY, it.symbol)
-
-            buyFragment.arguments = bundle
-            buyFragment.show(parentFragmentManager, buyFragment.tag)
+            showDialogFragment(BottomSheetBuyFragment(), it)
         }
 
         tickerAdapter.setOnItemClickSellListener {
-            val sellFragment = BottomSheetSellFragment()
-
-            val bundle = Bundle()
-            bundle.putString(SYMBOL_KEY, it.symbol)
-
-            sellFragment.arguments = bundle
-            sellFragment.show(parentFragmentManager, sellFragment.tag)
+            showDialogFragment(BottomSheetSellFragment(), it)
         }
 
     }
 
-    private fun logAllTransactions(repo : TradingTransactionRepository) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val all = withContext(Dispatchers.IO) {
-                repo.getAllTradingTransactions()
-            }
-            Log.d(Constants.TAG, "all trading transactions: $all")
-        }
+    // used for Buy and Sell bottom sheet fragments
+    private fun showDialogFragment(fragment: BottomSheetDialogFragment, ticker: Ticker) {
+        val bundle = Bundle()
+        bundle.putString(SYMBOL_KEY, ticker.symbol)
+        bundle.putDouble(PRICE_KEY, ticker.lastPrice)
+
+        fragment.arguments = bundle
+        fragment.show(parentFragmentManager, fragment.tag)
     }
 
     private fun initViews() {
@@ -117,7 +105,12 @@ class MarketFragment : Fragment() {
 
     private fun observeTickers() {
         viewModel.tickers.observe(viewLifecycleOwner, {
-            binding.tvLastPrice.text = it.toString()
+            var output = ""
+            for (ticker in it.tickers) {
+                output += ticker.symbol + ": " + ticker.lastPrice + "\n"
+            }
+
+            binding.tvLastPrice.text = output
 
             tickerAdapter.notifyDataSetChanged()
         })

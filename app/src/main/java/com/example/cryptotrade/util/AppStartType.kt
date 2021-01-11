@@ -8,6 +8,6 @@ enum class AppStartType {
 // - remove text from home page
 // - fix top app bar
 // - only give money once, on first startup
-// -
-// -
-// -
+// - Sonarlint analysis + fix other to-do's
+// - move all hardcoded strings to strings.xml
+// - fix permanent night mode?

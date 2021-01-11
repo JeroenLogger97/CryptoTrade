@@ -5,24 +5,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptotrade.R
 import com.example.cryptotrade.adapter.FilterAdapter
-import com.example.cryptotrade.model.HistoryFilter
 import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.util.Constants
+import com.example.cryptotrade.vm.HistoryViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_history_filter.*
 
 class HistoryFilterBottomSheet : BottomSheetDialogFragment() {
 
-    //todo: when quiting fragment, send selected filters to history fragment? or set in a viewmodel and read from viewmodel in history fragment
-//    private val cryptoFilters = arrayListOf<HistoryFilter>()
-    private val cryptoFilters = arrayListOf<Cryptocurrency>()
-    private val filterAdapter: FilterAdapter by lazy {
-        FilterAdapter(cryptoFilters, ::onFilterClick)
-    }
+    private val viewModel: HistoryViewModel by activityViewModels()
+
+    private lateinit var filterAdapter: FilterAdapter
+    private val selectedFilters = arrayListOf<Cryptocurrency>()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -39,23 +38,29 @@ class HistoryFilterBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun initViews () {
-        for (value in Cryptocurrency.values()) {
-            cryptoFilters.add(value)
-        }
+        filterAdapter = FilterAdapter(listOf(*Cryptocurrency.values()), ::onFilterClick, viewModel.selectedFilters)
 
         rvFilters.adapter = filterAdapter
         rvFilters.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
 
         filterAdapter.notifyDataSetChanged()
+
+        observeSelectedFilters()
     }
 
     private fun onFilterClick(cryptocurrency: Cryptocurrency, isChecked: Boolean) {
-        Log.d(Constants.TAG, "in fragment: $cryptocurrency: $isChecked")
+        if (isChecked) {
+            selectedFilters.add(cryptocurrency)
+            viewModel.addFilter(cryptocurrency)
+        } else {
+            selectedFilters.remove(cryptocurrency)
+            viewModel.removeFilter(cryptocurrency)
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        Log.d(Constants.TAG, "CALLED ON DESTROY!!")
+    private fun observeSelectedFilters() {
+        viewModel.selectedFilters.observe(viewLifecycleOwner, {
+            Log.d(Constants.TAG, "filters: $it")
+        })
     }
 }

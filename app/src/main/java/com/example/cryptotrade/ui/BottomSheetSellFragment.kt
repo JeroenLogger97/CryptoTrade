@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.cryptotrade.R
 import com.example.cryptotrade.model.database.Action
 import com.example.cryptotrade.model.database.FiatCurrency
 import com.example.cryptotrade.model.database.PortfolioEntry
 import com.example.cryptotrade.model.database.TradingTransaction
 import com.example.cryptotrade.util.KEY_USD_BALANCE
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.bottom_sheet_sell.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.*
-import java.lang.IllegalStateException
 import java.util.*
 
 class BottomSheetSellFragment : MarketBottomSheetFragment() {
@@ -52,9 +52,14 @@ class BottomSheetSellFragment : MarketBottomSheetFragment() {
             }
 
             if (error.isNotEmpty()) {
-                Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+                layout_main.view?.let { parentView ->
+                    Snackbar.make(parentView, error, Snackbar.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(activity, "Sold ${cryptoAmount.toString().toDouble()} $cryptocurrency for $totalPrice", Toast.LENGTH_SHORT).show()
+                layout_main.view?.let { parentView ->
+                    Snackbar.make(parentView, "Sold ${cryptoAmount.toString().toDouble()} " +
+                            "$cryptocurrency for ${String.format("%.2f", totalPrice)}", Snackbar.LENGTH_SHORT).show()
+                }
                 dialog?.dismiss()
             }
         }

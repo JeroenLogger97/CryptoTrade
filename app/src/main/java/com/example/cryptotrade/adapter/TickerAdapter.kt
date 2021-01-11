@@ -14,7 +14,6 @@ import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
 import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
-import kotlin.collections.HashMap
 
 class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersResponse>,
                     private val priceAtStartOfDayLiveData: LiveData<HashMap<Cryptocurrency, Double>>,

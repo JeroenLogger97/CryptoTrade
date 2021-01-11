@@ -5,18 +5,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
-import com.example.cryptotrade.model.Ticker
 import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.PortfolioRepository
 import com.example.cryptotrade.repository.TradingTransactionRepository
 import com.example.cryptotrade.util.Preferences
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.bottom_sheet_buy.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.lang.IllegalArgumentException
 
 abstract class MarketBottomSheetFragment : BottomSheetDialogFragment() {
 

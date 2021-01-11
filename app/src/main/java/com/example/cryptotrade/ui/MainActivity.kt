@@ -4,23 +4,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.ActivityMainBinding
 import com.example.cryptotrade.util.*
-import com.example.cryptotrade.vm.TickerViewModel
 
 // todo:
 //  - add start popup screen where you can choose your starting money (100, 1000, 10000)
 //  - add difficulty in introduction screen: easy no commission, hard high commission (+- 3%)
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: TickerViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private val navController: NavController by lazy { findNavController(R.id.nav_host_fragment) }
+    private val navController: NavController by lazy { findNavController(R.id.layout_main) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,10 +26,6 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         setSupportActionBar(binding.toolbar)
-
-//        binding.fab.setOnClickListener {
-//            // todo what to use the fab for?
-//        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
@@ -77,6 +70,7 @@ class MainActivity : AppCompatActivity() {
             AppStartType.FIRST_TIME -> {
                 // first ever run: show introduction dialog
 //                showIntroductionDialog()
+                //todo fix this and don't always reset usd balance
                 Preferences(applicationContext).setPreference(KEY_USD_BALANCE, 10_000.0)
             }
             else -> {

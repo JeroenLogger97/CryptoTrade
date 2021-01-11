@@ -7,33 +7,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptotrade.adapter.TradingTransactionAdapter
 import com.example.cryptotrade.databinding.FragmentHistoryBinding
+import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.model.database.TradingTransaction
 import com.example.cryptotrade.repository.TradingTransactionRepository
 import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.HistoryViewModel
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_history.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HistoryFragment : Fragment() {
 
-    private val viewModel: HistoryViewModel by viewModels()
+    private val viewModel: HistoryViewModel by activityViewModels()
     private var _binding: FragmentHistoryBinding? = null
     private val binding get() = _binding!!
 
     private val tradingTransactions: ArrayList<TradingTransaction> = arrayListOf()
     private val tradingTransactionAdapter = TradingTransactionAdapter(tradingTransactions)
     private val tradingTransactionRepository: TradingTransactionRepository by lazy { TradingTransactionRepository(requireContext()) }
+
+    private var startMillis: Long = 0
+    private var endMillis: Long = 0
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -49,11 +53,59 @@ class HistoryFragment : Fragment() {
 
         initViews()
 
+        observeFilters()
+    }
+
+    private fun observeFilters() {
+        viewModel.selectedFilters.observe(viewLifecycleOwner, {
+            tradingTransactions.clear()
+            tradingTransactions.addAll(getTradingTransactions())
+
+            filterTradingTransactionsOnCryptocurrency(it)
+            filterTradingTransactionsOnStartAndEndMillis()
+        })
+    }
+
+    private fun filterTradingTransactionsOnCryptocurrency(it: HashSet<Cryptocurrency>) {
+        if (it.isEmpty()) {
+            tradingTransactionAdapter.notifyDataSetChanged()
+            return
+        }
+
+        val filteredTransactions = arrayListOf<TradingTransaction>()
+
+        for (tradingTransaction in tradingTransactions) {
+            if (it.contains(Cryptocurrency.fromTradingPair(tradingTransaction.tradingPair))) {
+                filteredTransactions.add(tradingTransaction)
+            }
+        }
+
+        tradingTransactions.clear()
+        tradingTransactions.addAll(filteredTransactions)
+        tradingTransactionAdapter.notifyDataSetChanged()
+    }
+
+    private fun filterTradingTransactionsOnStartAndEndMillis() {
+        if (startMillis == 0L && endMillis == 0L) {
+            return
+        }
+
+        val filteredTransactions = tradingTransactions.filter { transaction ->
+            if (transaction.timestamp.time in startMillis..endMillis) {
+                return@filter true
+            }
+            return@filter false
+        }
+
+        tradingTransactions.clear()
+        tradingTransactions.addAll(filteredTransactions)
+        tradingTransactionAdapter.notifyDataSetChanged()
     }
 
     //todo: make layout pretty
     private fun initViews() {
-        tvDate.text = SimpleDateFormat.getDateInstance().format(System.currentTimeMillis())
+        tvDateFrom.text = "No date selected"
+        tvDateTo.text = "No date selected"
 
         val calendar = Calendar.getInstance()
 
@@ -67,8 +119,9 @@ class HistoryFragment : Fragment() {
         }
         picker.addOnPositiveButtonClickListener {
             tradingTransactions.clear()
+            tradingTransactions.addAll(getTradingTransactions())
 
-            val startMillis = it.first!!
+            startMillis = it.first!!
 
             val endDate = Date(it.second!!)
             val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy")
@@ -80,7 +133,7 @@ class HistoryFragment : Fragment() {
             val endDateIsToday = endDateFormatted == todayFormatted
             val startAndEndAreSameDate = it.first!! == it.second!!
 
-            val endMillis: Long = if (endDateIsToday || startAndEndAreSameDate) {
+            endMillis = if (endDateIsToday || startAndEndAreSameDate) {
                 // either the end date is today or the start and end date are the same date.
                 // in both cases add one day to end date:
                 // - end date is today: we want to include all transactions from today, so not
@@ -96,22 +149,17 @@ class HistoryFragment : Fragment() {
             } else {
                 it.second!!
             }
-            tvDate.text = "$startMillis to $endMillis"
 
-            //todo make request to db ones, save result in field and filter list on that field instead of another db query
-            // filter transactions
-            val filteredTransactions = getTradingTransactions().filter { transaction ->
-                if (transaction.timestamp.time in startMillis..endMillis) {
-                    return@filter true
-                }
-                return@filter false
-            }
+            tvDateFrom.text = simpleDateFormat.format(Date(startMillis))
+            tvDateTo.text = simpleDateFormat.format(Date(endMillis))
 
-            tradingTransactions.addAll(filteredTransactions)
+            filterTradingTransactionsOnStartAndEndMillis()
+
+            viewModel.selectedFilters.value?.let { filters -> filterTradingTransactionsOnCryptocurrency(filters) }
             tradingTransactionAdapter.notifyDataSetChanged()
         }
 
-        tvDate.setOnClickListener {
+        btnSelectDateRange.setOnClickListener {
             picker.show(activity?.supportFragmentManager!!, builder.toString())
         }
 
@@ -154,8 +202,4 @@ class HistoryFragment : Fragment() {
 
         return returnValue
     }
-
-//    private suspend fun getExistingPortfolioEntry(cryptocurrency: Cryptocurrency) : PortfolioEntry {
-//        return portfolioRepository.getPortfolioEntry(cryptocurrency) ?: PortfolioEntry(cryptocurrency, 0.0)
-//    }
 }

@@ -1,28 +1,20 @@
 package com.example.cryptotrade.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptotrade.adapter.TickerAdapter
 import com.example.cryptotrade.databinding.FragmentMarketBinding
 import com.example.cryptotrade.model.Ticker
-import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
-import com.example.cryptotrade.repository.TradingTransactionRepository
-import com.example.cryptotrade.util.Constants
 import com.example.cryptotrade.vm.TickerViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_market.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.concurrent.fixedRateTimer
 
 /**
@@ -66,17 +58,17 @@ class MarketFragment : Fragment() {
         startRefreshTimer()
 
         tickerAdapter.setOnItemClickBuyListener {
-            showDialogFragment(BottomSheetBuyFragment(), it)
+            showDialogFragment(BottomSheetBuyFragment(), it, view)
         }
 
         tickerAdapter.setOnItemClickSellListener {
-            showDialogFragment(BottomSheetSellFragment(), it)
+            showDialogFragment(BottomSheetSellFragment(), it, view)
         }
 
     }
 
     // used for Buy and Sell bottom sheet fragments
-    private fun showDialogFragment(fragment: BottomSheetDialogFragment, ticker: Ticker) {
+    private fun showDialogFragment(fragment: BottomSheetDialogFragment, ticker: Ticker, view: View) {
         val bundle = Bundle()
         bundle.putString(SYMBOL_KEY, ticker.symbol)
         bundle.putDouble(PRICE_KEY, ticker.lastPrice)
@@ -118,7 +110,7 @@ class MarketFragment : Fragment() {
 
     private fun observeError() {
         viewModel.errorText.observe(viewLifecycleOwner, {
-            Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+            view?.let { itView -> Snackbar.make(itView, it, Snackbar.LENGTH_SHORT).show() }
         })
     }
 

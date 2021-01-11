@@ -3,7 +3,6 @@ package com.example.cryptotrade.ui
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.example.cryptotrade.util.KEY_USD_BALANCE
 import com.example.cryptotrade.util.Preferences
 import kotlinx.android.synthetic.main.fragment_introduction.*

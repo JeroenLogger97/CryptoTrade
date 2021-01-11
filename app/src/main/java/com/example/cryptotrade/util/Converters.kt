@@ -3,7 +3,6 @@ package com.example.cryptotrade.util
 import androidx.room.TypeConverter
 import com.example.cryptotrade.model.database.Action
 import com.example.cryptotrade.model.database.Cryptocurrency
-import java.time.LocalDateTime
 import java.util.*
 
 class Converters {

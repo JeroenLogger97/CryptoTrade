@@ -1,7 +1,10 @@
 package com.example.cryptotrade.database
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.cryptotrade.dao.PortfolioDao
 import com.example.cryptotrade.dao.TradingTransactionDao
 import com.example.cryptotrade.model.database.PortfolioEntry

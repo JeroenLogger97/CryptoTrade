@@ -67,7 +67,7 @@ class BottomSheetSellFragment : MarketBottomSheetFragment() {
 
         etSellInputCrypto.setText("1")
         etSellInputCrypto.setSelection(1)
-        etSellInputUsd.setText(price.toString())
+        etSellInputUsd.setText(String.format("%.2f", price))
     }
 
     // need this method to bridge between coroutine scopes and 'normal' code

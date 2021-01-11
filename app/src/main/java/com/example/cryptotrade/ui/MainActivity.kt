@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(binding.toolbar)
 
-        binding.fab.setOnClickListener {
-            // todo what to use the fab for?
-        }
+//        binding.fab.setOnClickListener {
+//            // todo what to use the fab for?
+//        }
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)

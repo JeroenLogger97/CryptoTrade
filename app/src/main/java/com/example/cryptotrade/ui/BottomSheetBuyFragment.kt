@@ -67,7 +67,7 @@ class BottomSheetBuyFragment : MarketBottomSheetFragment() {
 
         etBuyInputCrypto.setText("1")
         etBuyInputCrypto.setSelection(1)
-        etBuyInputUsd.setText(price.toString())
+        etBuyInputUsd.setText(String.format("%.2f", price))
     }
 
     override fun onEnterPress() {

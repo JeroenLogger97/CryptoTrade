@@ -14,7 +14,8 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.CryptoTrade.NoActionBar">
+<!--    <style name="Theme.CryptoTrade.NoActionBar">-->
+    <style name="Theme.CryptoTrade.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

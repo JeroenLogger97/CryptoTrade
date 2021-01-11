@@ -10,6 +10,7 @@ import com.example.cryptotrade.repository.BitfinexRepository
 import com.example.cryptotrade.util.Constants
 import kotlinx.coroutines.launch
 
+//todo this class is unused? remove it
 class HistoryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val bitfinexRepository = BitfinexRepository()

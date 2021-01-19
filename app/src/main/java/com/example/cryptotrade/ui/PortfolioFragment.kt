@@ -20,6 +20,8 @@ import com.example.cryptotrade.vm.TickerViewModel
 import kotlinx.android.synthetic.main.fragment_portfolio.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PortfolioFragment : Fragment() {
 
@@ -66,10 +68,10 @@ class PortfolioFragment : Fragment() {
         }
 
         val usdBalanceValue = preferences.getPreferences().getFloat(KEY_USD_BALANCE, 0f)
-        val usdBalanceString = String.format("%.2f", usdBalanceValue)
+        val usdBalanceString = String.format(Locale.ENGLISH, "%.2f", usdBalanceValue)
 
-        val totalCryptocurrencyValueString = String.format("%.2f", totalCryptocurrencyValue)
-        val totalValueString = String.format("%.2f", usdBalanceValue + totalCryptocurrencyValue)
+        val totalCryptocurrencyValueString = String.format(Locale.ENGLISH, "%.2f", totalCryptocurrencyValue)
+        val totalValueString = String.format(Locale.ENGLISH, "%.2f", usdBalanceValue + totalCryptocurrencyValue)
 
         tvUsdBalance.text = "$$usdBalanceString"
         tvCryptocurrencyValue.text = "$$totalCryptocurrencyValueString"

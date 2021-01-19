@@ -14,6 +14,8 @@ import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.TradingPairRepository
 import com.example.cryptotrade.util.Constants
 import kotlinx.android.synthetic.main.item_market_pair.view.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersResponse>,
                     private val priceAtStartOfDayLiveData: LiveData<HashMap<Cryptocurrency, Double>>,
@@ -51,7 +53,7 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
             itemView.tvPair.text = ticker.symbol
 
             if (ticker.lastPrice > 5_000) {
-                itemView.tvPrice.text = String.format("%.2f", ticker.lastPrice)
+                itemView.tvPrice.text = String.format(Locale.ENGLISH, "%.2f", ticker.lastPrice)
             } else {
                 itemView.tvPrice.text = ticker.lastPrice.toString()
             }
@@ -65,13 +67,13 @@ class TickerAdapter(private val tickersLiveData: LiveData<MultipleTickersRespons
                 addPlusPrefix = true
             }
 
-            itemView.tv24hChange.text = String.format("%s%.2f%s", if (addPlusPrefix) plusPrefix else "", change, "%")
+            itemView.tv24hChange.text = String.format(Locale.ENGLISH, "%s%.2f%s", if (addPlusPrefix) plusPrefix else "", change, "%")
         }
     }
 
     private fun calculateChange(start: Double, current: Double) : Double {
         val change = (current - start) / start * 100
-        return String.format("%.2f", change).toDouble()
+        return String.format(Locale.ENGLISH, "%.2f", change).toDouble()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TickerAdapter.ViewHolder {

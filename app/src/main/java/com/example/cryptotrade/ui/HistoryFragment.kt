@@ -102,7 +102,6 @@ class HistoryFragment : Fragment() {
         tradingTransactionAdapter.notifyDataSetChanged()
     }
 
-    //todo: make layout pretty
     private fun initViews() {
         tvDateFrom.text = "No date selected"
         tvDateTo.text = "No date selected"

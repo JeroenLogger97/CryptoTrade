@@ -5,9 +5,10 @@ enum class AppStartType {
 }
 
 //todo:
-// - remove text from home page
-// - fix top app bar
-// - only give money once, on first startup
-// - Sonarlint analysis + fix other to-do's
+// -------- TO DO ---------
 // - move all hardcoded strings to strings.xml
+// -
+// - Sonarlint analysis + fix other to-do's
 // - fix permanent night mode?
+// --------  DONE ----------
+// - only give money once, on first startup

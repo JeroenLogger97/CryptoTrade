@@ -58,7 +58,7 @@ class BottomSheetSellFragment : MarketBottomSheetFragment() {
             } else {
                 layout_main.view?.let { parentView ->
                     Snackbar.make(parentView, "Sold ${cryptoAmount.toString().toDouble()} " +
-                            "$cryptocurrency for ${String.format("%.2f", totalPrice)}", Snackbar.LENGTH_SHORT).show()
+                            "$cryptocurrency for ${String.format(Locale.ENGLISH, "%.2f", totalPrice)}", Snackbar.LENGTH_SHORT).show()
                 }
                 dialog?.dismiss()
             }
@@ -72,7 +72,7 @@ class BottomSheetSellFragment : MarketBottomSheetFragment() {
 
         etSellInputCrypto.setText("1")
         etSellInputCrypto.setSelection(1)
-        etSellInputUsd.setText(String.format("%.2f", price))
+        etSellInputUsd.setText(String.format(Locale.ENGLISH, "%.2f", price))
     }
 
     // need this method to bridge between coroutine scopes and 'normal' code

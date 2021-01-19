@@ -1,18 +1,20 @@
 package com.example.cryptotrade.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.cryptotrade.R
 import com.example.cryptotrade.databinding.ActivityMainBinding
 import com.example.cryptotrade.util.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // todo:
-//  - add start popup screen where you can choose your starting money (100, 1000, 10000)
 //  - add difficulty in introduction screen: easy no commission, hard high commission (+- 3%)
 class MainActivity : AppCompatActivity() {
 
@@ -27,8 +29,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         setSupportActionBar(binding.toolbar)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
         supportActionBar?.title = "CryptoTrade"
 
         binding.toolbar.setNavigationOnClickListener {
@@ -69,9 +69,7 @@ class MainActivity : AppCompatActivity() {
         when (getAppStartType()) {
             AppStartType.FIRST_TIME -> {
                 // first ever run: show introduction dialog
-//                showIntroductionDialog()
-                //todo fix this and don't always reset usd balance
-                Preferences(applicationContext).setPreference(KEY_USD_BALANCE, 10_000.0)
+                showIntroductionDialog()
             }
             else -> {
                 return
@@ -79,7 +77,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAppStartType() : AppStartType {
+    private fun getAppStartType(): AppStartType {
+        //todo change this while testing!
         if (1 == 1) {
             return AppStartType.FIRST_TIME
         }
@@ -101,12 +100,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //todo remove method
     private fun showIntroductionDialog() {
-//        val intent = Intent(this, IntroductionFragment::class.java)
-//        intent.flags = Intent.FLAG_RECEIVER_FOREGROUND
-//        startActivity(intent)
-//
-//        findNavController(R.id.nav_host_fragment).navigate(R.id.introductionFragment)
+        StartingBudgetDialogFragment().show(supportFragmentManager, "StartingBudgetDialogFragment")
+    }
+}
+
+class StartingBudgetDialogFragment : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val singleItems = arrayOf("$1,000", "$10,000", "$100,000")
+        val checkedItem = 0
+        var selectedIndex = 0
+
+        return activity?.let {
+            val builder = MaterialAlertDialogBuilder(it)
+            builder.setTitle("Welcome to CryptoTrade! Choose your starting budget:")
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        // Respond to positive button press
+                        val value = singleItems[selectedIndex].replace(",", "").substring(1).toDouble()
+
+                        Preferences(it).setPreference(KEY_USD_BALANCE, value)
+                    }
+                    // Single-choice items (initialized with checked item)
+                    .setSingleChoiceItems(singleItems, checkedItem) { _, which ->
+                        // Respond to item chosen
+                        selectedIndex = which
+                    }
+                    .show()
+
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

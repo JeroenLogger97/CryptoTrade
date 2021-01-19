@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptotrade.R
 import com.example.cryptotrade.ui.PortfolioFragment
 import kotlinx.android.synthetic.main.item_portfolio_entry.view.*
+import java.util.*
 
 class PortfolioAdapter(private val portfolioEntries: List<PortfolioFragment.PortfolioEntryValue>) : RecyclerView.Adapter<PortfolioAdapter.ViewHolder>() {
 
@@ -14,8 +15,8 @@ class PortfolioAdapter(private val portfolioEntries: List<PortfolioFragment.Port
 
         fun databind(portfolioEntry: PortfolioFragment.PortfolioEntryValue) {
             itemView.tvCurrency.text = portfolioEntry.portfolioEntry.cryptocurrency.toString()
-            itemView.tvAmount.text = String.format("%.8f", portfolioEntry.portfolioEntry.amount)
-            itemView.tvCurrentValue.text = String.format("$%.2f", portfolioEntry.currentValue)
+            itemView.tvAmount.text = String.format(Locale.ENGLISH, "%.8f", portfolioEntry.portfolioEntry.amount)
+            itemView.tvCurrentValue.text = String.format(Locale.ENGLISH, "$%.2f", portfolioEntry.currentValue)
         }
     }
 

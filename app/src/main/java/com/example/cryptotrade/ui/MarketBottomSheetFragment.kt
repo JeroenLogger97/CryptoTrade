@@ -13,6 +13,7 @@ import com.example.cryptotrade.util.Preferences
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.util.*
 
 abstract class MarketBottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -67,7 +68,7 @@ abstract class MarketBottomSheetFragment : BottomSheetDialogFragment() {
                 if (cryptoEditText.hasFocus() && cryptoEditText.text.toString().isNotEmpty()) {
                     val value = price * cryptoEditText.text.toString().toDouble()
 
-                    usdEditText.setText(String.format("$%.2f", value))
+                    usdEditText.setText(String.format(Locale.ENGLISH, "$%.2f", value))
                 }
             }
         }
@@ -92,7 +93,7 @@ abstract class MarketBottomSheetFragment : BottomSheetDialogFragment() {
                 val inputPrice = usdEditText.text.toString().substring(1)
                 if (usdEditText.hasFocus() && inputPrice.isNotEmpty()) {
                     val amountOfCurrency = inputPrice.toDouble() / price
-                    cryptoEditText.setText(String.format("%.5f", amountOfCurrency))
+                    cryptoEditText.setText(String.format(Locale.ENGLISH, "%.5f", amountOfCurrency))
                 }
             }
         }

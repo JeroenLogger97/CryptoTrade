@@ -5,7 +5,7 @@ package com.example.cryptotrade.model.database
  * trading pair BTCUSD
  */
 enum class Cryptocurrency {
-    BTC, LTC, XRP;
+    BTC, LTC, XRP, ZEC, ETH, NEO;
 
     companion object {
         fun fromTradingPair(tradingPair: String) : Cryptocurrency {

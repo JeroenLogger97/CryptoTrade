@@ -8,6 +8,7 @@ import com.example.cryptotrade.R
 import com.example.cryptotrade.model.database.TradingTransaction
 import kotlinx.android.synthetic.main.item_trading_transaction.view.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class TradingTransactionAdapter(private val tradingTransactions: List<TradingTransaction>) : RecyclerView.Adapter<TradingTransactionAdapter.ViewHolder>() {
 
@@ -15,8 +16,8 @@ class TradingTransactionAdapter(private val tradingTransactions: List<TradingTra
 
         fun databind(tradingTransaction: TradingTransaction) {
             itemView.tvTradingPair.text = tradingTransaction.tradingPair
-            itemView.tvTradingAmount.text = String.format("%.8f", tradingTransaction.amount)
-            itemView.tvPriceAtTrade.text = String.format("$%.2f", tradingTransaction.price)
+            itemView.tvTradingAmount.text = String.format(Locale.ENGLISH, "%.8f", tradingTransaction.amount)
+            itemView.tvPriceAtTrade.text = String.format(Locale.ENGLISH, "$%.2f", tradingTransaction.price)
             itemView.tvActionType.text = tradingTransaction.action.toString()
             itemView.tvActionType.setTextColor(tradingTransaction.action.color)
             itemView.tvTradeDate.text = SimpleDateFormat("dd-MM-yyyy, HH:mm:ss").format(tradingTransaction.timestamp).toString()

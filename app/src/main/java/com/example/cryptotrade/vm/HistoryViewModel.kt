@@ -8,7 +8,6 @@ import com.example.cryptotrade.model.database.Cryptocurrency
 import com.example.cryptotrade.repository.FilterRepository
 import kotlinx.coroutines.launch
 
-//todo this class is unused? remove it
 class HistoryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val filterRepository = FilterRepository()

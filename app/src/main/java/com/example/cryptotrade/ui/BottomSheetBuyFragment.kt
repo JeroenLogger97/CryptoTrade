@@ -61,7 +61,7 @@ class BottomSheetBuyFragment : MarketBottomSheetFragment() {
             } else {
                 layout_main.view?.let { parentView ->
                     Snackbar.make(parentView, "Purchased ${cryptoAmount.toString().toDouble()} " +
-                            "$cryptocurrency for ${String.format("%.2f", totalPrice)}", Snackbar.LENGTH_SHORT).show()
+                            "$cryptocurrency for ${String.format(Locale.ENGLISH, "%.2f", totalPrice)}", Snackbar.LENGTH_SHORT).show()
                 }
                 dialog?.dismiss()
             }
@@ -76,7 +76,7 @@ class BottomSheetBuyFragment : MarketBottomSheetFragment() {
 
         etBuyInputCrypto.setText("1")
         etBuyInputCrypto.setSelection(1)
-        etBuyInputUsd.setText(String.format("%.2f", price))
+        etBuyInputUsd.setText(String.format(Locale.ENGLISH, "%.2f", price))
     }
 
     override fun onEnterPress() {
